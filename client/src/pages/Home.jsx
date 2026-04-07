@@ -23,7 +23,7 @@ import {
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-indigo-50/30 font-sans antialiased">
+    <div className="min-h-screen bg-linear-to-b from-slate-50 via-white to-indigo-50/30 font-sans antialiased">
       
       {/* ----- NAVBAR: premium, sticky, with glassmorphism ----- */}
       <nav className="sticky top-0 z-50 bg-white/90 backdrop-blur-xl border-b border-indigo-100/40 shadow-sm">
@@ -32,7 +32,7 @@ const Home = () => {
             
             {/* Logo + Brand */}
             <div className="flex items-center gap-3 group">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-700 to-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-200/70 group-hover:scale-105 transition-transform">
+              <div className="w-10 h-10 rounded-2xl bg-linear-to-br from-indigo-700 to-indigo-500 flex items-center justify-center shadow-lg shadow-indigo-200/70 group-hover:scale-105 transition-transform">
                 <span className="text-white font-bold text-xl tracking-tight">P</span>
               </div>
               <div className="flex flex-col">
@@ -110,7 +110,7 @@ const Home = () => {
               </div>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-tight">
                 Your community,{' '}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-indigo-500">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-indigo-700 to-indigo-500">
                   seamlessly connected.
                 </span>
               </h1>
@@ -134,7 +134,7 @@ const Home = () => {
               <div className="flex items-center gap-4 pt-6">
                 <div className="flex -space-x-2">
                   {[1,2,3,4].map((i) => (
-                    <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-100 to-indigo-200 border-2 border-white flex items-center justify-center text-xs font-bold text-indigo-700">
+                    <div key={i} className="w-8 h-8 rounded-full bg-linear-to-br from-indigo-100 to-indigo-200 border-2 border-white flex items-center justify-center text-xs font-bold text-indigo-700">
                       {i}
                     </div>
                   ))}
@@ -189,7 +189,7 @@ const Home = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Advantage 1 */}
             <div className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-100 to-indigo-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-100 to-indigo-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <FaBolt className="text-indigo-700 text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">Lightning Fast</h3>
@@ -199,7 +199,7 @@ const Home = () => {
             </div>
             {/* Advantage 2 */}
             <div className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-emerald-100 to-emerald-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <FaShieldAlt className="text-emerald-700 text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">Bank-Grade Security</h3>
@@ -209,7 +209,7 @@ const Home = () => {
             </div>
             {/* Advantage 3 */}
             <div className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-amber-100 to-amber-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <GiPartyPopper className="text-amber-700 text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">Community First</h3>
@@ -219,7 +219,7 @@ const Home = () => {
             </div>
             {/* Advantage 4 */}
             <div className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-100 to-purple-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-purple-100 to-purple-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <FaFileInvoice className="text-purple-700 text-2xl" />
               </div>
               <h3 className="text-xl font-bold text-slate-900 mb-3">Zero Paperwork</h3>
@@ -232,7 +232,7 @@ const Home = () => {
       </div>
 
       {/* ----- FACILITIES SECTION: smart amenities management ----- */}
-      <div className="bg-gradient-to-b from-indigo-50/30 to-white py-20 lg:py-28">
+      <div className="bg-linear-to-b from-indigo-50/30 to-white py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
