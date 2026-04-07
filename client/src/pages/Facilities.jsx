@@ -1,25 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import api from '../api/client';
 
-const amenities = [
-  { name: 'Clubhouse Hall', slots: '7 slots available', color: 'from-orange-100 to-orange-200' },
-  { name: 'Swimming Pool', slots: '3 slots available', color: 'from-cyan-100 to-cyan-200' },
-  { name: 'Tennis Court', slots: '5 slots available', color: 'from-lime-100 to-lime-200' },
-  { name: 'BBQ Deck', slots: '2 slots available', color: 'from-amber-100 to-amber-200' },
-  { name: 'Conference Room', slots: '6 slots available', color: 'from-slate-100 to-slate-200' },
-  { name: 'Guest Suite', slots: '1 slot available', color: 'from-rose-100 to-rose-200' }
+const facilityStyles = [
+  'from-orange-100 to-orange-200',
+  'from-cyan-100 to-cyan-200',
+  'from-lime-100 to-lime-200',
+  'from-amber-100 to-amber-200',
+  'from-slate-100 to-slate-200',
+  'from-rose-100 to-rose-200',
 ];
 
 const Facilities = () => {
+  const [amenities, setAmenities] = useState([]);
   const [booking, setBooking] = useState({ facility: '', date: '', time: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleBooking = (e) => {
+  useEffect(() => {
+    const loadAmenities = async () => {
+      try {
+        const { data } = await api.get('/facilities/amenities');
+        setAmenities(
+          (data || []).map((name, index) => ({
+            name,
+            slots: 'Available for booking',
+            color: facilityStyles[index % facilityStyles.length],
+          }))
+        );
+      } catch (error) {
+        toast.error(error?.response?.data?.message || 'Failed to load facilities');
+      }
+    };
+
+    loadAmenities();
+  }, []);
+
+  const handleBooking = async (e) => {
     e.preventDefault();
-    console.log('booking request:', booking);
+    setIsSubmitting(true);
+
+    try {
+      await api.post('/facilities/bookings', booking);
+      toast.success('Facility booking submitted');
+      setBooking({ facility: '', date: '', time: '' });
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Booking failed');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-yellow-50">
+    <div className="min-h-screen bg-linear-to-b from-orange-50 via-white to-yellow-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <Link
           to="/"
@@ -39,7 +72,7 @@ const Facilities = () => {
             <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
               {amenities.map((item) => (
                 <article key={item.name} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                  <div className={`h-2 w-full rounded-full bg-gradient-to-r ${item.color}`} />
+                  <div className={`h-2 w-full rounded-full bg-linear-to-r ${item.color}`} />
                   <h3 className="font-semibold text-slate-900 mt-4">{item.name}</h3>
                   <p className="text-sm text-slate-500 mt-1">{item.slots}</p>
                   <button className="mt-4 text-sm font-semibold text-orange-700 hover:text-orange-800">View Schedule</button>
@@ -94,9 +127,10 @@ const Facilities = () => {
 
               <button
                 type="submit"
-                className="w-full rounded-xl bg-orange-600 text-white py-3 font-semibold hover:bg-orange-700 transition-colors"
+                disabled={isSubmitting}
+                className="w-full rounded-xl bg-orange-600 text-white py-3 font-semibold hover:bg-orange-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               >
-                Request Booking
+                {isSubmitting ? 'Submitting...' : 'Request Booking'}
               </button>
             </form>
           </aside>

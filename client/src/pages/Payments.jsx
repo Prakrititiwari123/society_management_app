@@ -1,16 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const transactions = [
-  { id: 'TXN-4029', date: 'Apr 01, 2026', title: 'Monthly Maintenance', amount: 'Rs 4,250', status: 'Paid' },
-  { id: 'TXN-3982', date: 'Mar 16, 2026', title: 'Parking Fee', amount: 'Rs 750', status: 'Paid' },
-  { id: 'TXN-3921', date: 'Mar 01, 2026', title: 'Water Charges', amount: 'Rs 1,100', status: 'Pending' },
-  { id: 'TXN-3904', date: 'Feb 28, 2026', title: 'Clubhouse Booking', amount: 'Rs 1,500', status: 'Paid' }
-];
+import toast from 'react-hot-toast';
+import api from '../api/client';
 
 const Payments = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [summary, setSummary] = useState({ totalDue: 1100, paidThisMonth: 5000, walletBalance: 450 });
+  const [selectedMethod, setSelectedMethod] = useState('UPI');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadPayments = async () => {
+      try {
+        const [summaryResponse, transactionsResponse] = await Promise.all([
+          api.get('/payments/summary'),
+          api.get('/payments/transactions'),
+        ]);
+
+        setSummary(summaryResponse.data || summary);
+        setTransactions(transactionsResponse.data || []);
+      } catch (error) {
+        toast.error(error?.response?.data?.message || 'Failed to load payment data');
+      }
+    };
+
+    loadPayments();
+  }, []);
+
+  const handlePay = async () => {
+    setIsSubmitting(true);
+
+    try {
+      await api.post('/payments/pay', {
+        title: 'Monthly Maintenance',
+        amount: summary.totalDue || 1100,
+        method: selectedMethod,
+      });
+
+      toast.success('Payment completed');
+
+      const [summaryResponse, transactionsResponse] = await Promise.all([
+        api.get('/payments/summary'),
+        api.get('/payments/transactions'),
+      ]);
+
+      setSummary(summaryResponse.data || summary);
+      setTransactions(transactionsResponse.data || []);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || 'Payment failed');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-teal-50">
+    <div className="min-h-screen bg-linear-to-b from-sky-50 via-white to-teal-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <Link
           to="/"
@@ -27,17 +71,17 @@ const Payments = () => {
         <section className="grid md:grid-cols-3 gap-4 mt-8">
           <article className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <p className="text-sm text-slate-500">Total Due</p>
-            <p className="text-3xl font-bold text-rose-600 mt-2">Rs 1,100</p>
+            <p className="text-3xl font-bold text-rose-600 mt-2">Rs {summary.totalDue ?? 0}</p>
             <p className="text-xs text-slate-500 mt-1">Due date: Apr 08, 2026</p>
           </article>
           <article className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <p className="text-sm text-slate-500">Paid This Month</p>
-            <p className="text-3xl font-bold text-emerald-600 mt-2">Rs 5,000</p>
-            <p className="text-xs text-slate-500 mt-1">2 successful transactions</p>
+            <p className="text-3xl font-bold text-emerald-600 mt-2">Rs {summary.paidThisMonth ?? 0}</p>
+            <p className="text-xs text-slate-500 mt-1">{transactions.length} successful transactions</p>
           </article>
           <article className="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
             <p className="text-sm text-slate-500">Wallet Balance</p>
-            <p className="text-3xl font-bold text-sky-600 mt-2">Rs 450</p>
+            <p className="text-3xl font-bold text-sky-600 mt-2">Rs {summary.walletBalance ?? 0}</p>
             <p className="text-xs text-slate-500 mt-1">Use towards next payment</p>
           </article>
         </section>
@@ -63,13 +107,13 @@ const Payments = () => {
                 </thead>
                 <tbody>
                   {transactions.map((tx) => (
-                    <tr key={tx.id} className="border-b border-slate-100">
+                    <tr key={tx._id || tx.id} className="border-b border-slate-100">
                       <td className="py-4 pr-4">
                         <p className="font-semibold text-slate-900">{tx.title}</p>
-                        <p className="text-xs text-slate-500 mt-0.5">{tx.id}</p>
+                        <p className="text-xs text-slate-500 mt-0.5">{tx._id || tx.id}</p>
                       </td>
-                      <td className="py-4 pr-4 text-slate-600">{tx.date}</td>
-                      <td className="py-4 pr-4 font-semibold text-slate-800">{tx.amount}</td>
+                      <td className="py-4 pr-4 text-slate-600">{tx.date || tx.paidAt || '-'}</td>
+                      <td className="py-4 pr-4 font-semibold text-slate-800">Rs {tx.amount}</td>
                       <td className="py-4">
                         <span
                           className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold ${
@@ -91,19 +135,42 @@ const Payments = () => {
             <p className="text-sm text-slate-600 mt-2">Pay pending dues instantly using your preferred method.</p>
 
             <div className="space-y-3 mt-5">
-              <button className="w-full rounded-xl border border-slate-300 px-4 py-3 text-left hover:border-sky-300 transition-colors">
+              <button
+                type="button"
+                onClick={() => setSelectedMethod('UPI')}
+                className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
+                  selectedMethod === 'UPI' ? 'border-sky-500 bg-sky-50' : 'border-slate-300 hover:border-sky-300'
+                }`}
+              >
                 UPI
               </button>
-              <button className="w-full rounded-xl border border-slate-300 px-4 py-3 text-left hover:border-sky-300 transition-colors">
+              <button
+                type="button"
+                onClick={() => setSelectedMethod('Card')}
+                className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
+                  selectedMethod === 'Card' ? 'border-sky-500 bg-sky-50' : 'border-slate-300 hover:border-sky-300'
+                }`}
+              >
                 Credit or Debit Card
               </button>
-              <button className="w-full rounded-xl border border-slate-300 px-4 py-3 text-left hover:border-sky-300 transition-colors">
+              <button
+                type="button"
+                onClick={() => setSelectedMethod('Net Banking')}
+                className={`w-full rounded-xl border px-4 py-3 text-left transition-colors ${
+                  selectedMethod === 'Net Banking' ? 'border-sky-500 bg-sky-50' : 'border-slate-300 hover:border-sky-300'
+                }`}
+              >
                 Net Banking
               </button>
             </div>
 
-            <button className="w-full mt-6 rounded-xl bg-sky-600 text-white py-3 font-semibold hover:bg-sky-700 transition-colors">
-              Pay Rs 1,100
+            <button
+              type="button"
+              onClick={handlePay}
+              disabled={isSubmitting}
+              className="w-full mt-6 rounded-xl bg-sky-600 text-white py-3 font-semibold hover:bg-sky-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Processing...' : `Pay Rs ${summary.totalDue ?? 0}`}
             </button>
           </aside>
         </section>

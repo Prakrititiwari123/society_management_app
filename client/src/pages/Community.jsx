@@ -1,58 +1,45 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const highlights = [
-  { title: 'Residents Active', value: '482', note: 'This month +12%' },
-  { title: 'Open Discussions', value: '17', note: '5 new today' },
-  { title: 'Upcoming Events', value: '6', note: 'Weekend special' },
-  { title: 'Volunteer Groups', value: '9', note: 'Join and contribute' }
-];
-
-const events = [
-  {
-    name: 'Spring Community Meetup',
-    date: 'Apr 07, 2026',
-    time: '6:30 PM',
-    venue: 'Clubhouse Lawn'
-  },
-  {
-    name: 'Resident Welfare Forum',
-    date: 'Apr 10, 2026',
-    time: '8:00 PM',
-    venue: 'Tower B Lobby'
-  },
-  {
-    name: 'Kids Talent Evening',
-    date: 'Apr 14, 2026',
-    time: '5:00 PM',
-    venue: 'Community Hall'
-  }
-];
-
-const discussions = [
-  {
-    topic: 'EV Charging Slots Expansion',
-    author: 'Ritika S.',
-    replies: 21,
-    category: 'Sustainability'
-  },
-  {
-    topic: 'Weekend Farmers Market Proposal',
-    author: 'Ankit P.',
-    replies: 13,
-    category: 'Lifestyle'
-  },
-  {
-    topic: 'Pet Park Etiquette and Timings',
-    author: 'Megha R.',
-    replies: 8,
-    category: 'Community Rules'
-  }
-];
+import toast from 'react-hot-toast';
+import api from '../api/client';
 
 const Community = () => {
+  const [highlights, setHighlights] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [discussions, setDiscussions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadCommunityData = async () => {
+      try {
+        const [highlightsResponse, eventsResponse, discussionsResponse] = await Promise.all([
+          api.get('/community/highlights'),
+          api.get('/community/events'),
+          api.get('/community/discussions'),
+        ]);
+
+        const data = highlightsResponse.data || {};
+
+        setHighlights([
+          { title: 'Residents Active', value: String(data.residentsActive ?? 0), note: 'Live count' },
+          { title: 'Open Discussions', value: String(data.openDiscussions ?? 0), note: 'Active topics' },
+          { title: 'Upcoming Events', value: String(data.upcomingEvents ?? 0), note: 'Scheduled items' },
+          { title: 'Volunteer Groups', value: String(data.volunteerGroups ?? 0), note: 'Community teams' },
+        ]);
+        setEvents(eventsResponse.data || []);
+        setDiscussions(discussionsResponse.data || []);
+      } catch (error) {
+        toast.error(error?.response?.data?.message || 'Failed to load community data');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCommunityData();
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-cyan-50 text-slate-800">
+    <div className="min-h-screen bg-linear-to-b from-emerald-50 via-white to-cyan-50 text-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <Link
           to="/"
@@ -82,6 +69,8 @@ const Community = () => {
           ))}
         </section>
 
+        {loading && <p className="mt-6 text-sm text-slate-500">Loading community data...</p>}
+
         <section className="grid lg:grid-cols-3 gap-6 mt-8">
           <div className="lg:col-span-2 bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
             <div className="flex items-center justify-between gap-4">
@@ -90,7 +79,7 @@ const Community = () => {
             </div>
             <div className="space-y-4 mt-5">
               {events.map((event) => (
-                <div key={event.name} className="border border-slate-200 rounded-2xl p-4 hover:border-emerald-200 transition-colors">
+                <div key={event._id || event.name} className="border border-slate-200 rounded-2xl p-4 hover:border-emerald-200 transition-colors">
                   <h3 className="font-semibold text-slate-900">{event.name}</h3>
                   <p className="text-sm text-slate-600 mt-1">
                     {event.date} at {event.time}
@@ -126,12 +115,12 @@ const Community = () => {
           </div>
           <div className="grid md:grid-cols-3 gap-4 mt-5">
             {discussions.map((discussion) => (
-              <article key={discussion.topic} className="rounded-2xl border border-slate-200 p-5">
+              <article key={discussion._id || discussion.topic} className="rounded-2xl border border-slate-200 p-5">
                 <p className="text-xs inline-flex rounded-full bg-cyan-100 text-cyan-700 px-2 py-1 font-medium">
                   {discussion.category}
                 </p>
                 <h3 className="font-semibold mt-3">{discussion.topic}</h3>
-                <p className="text-sm text-slate-500 mt-2">By {discussion.author}</p>
+                <p className="text-sm text-slate-500 mt-2">By {discussion.authorName}</p>
                 <p className="text-sm text-emerald-700 font-semibold mt-3">{discussion.replies} replies</p>
               </article>
             ))}

@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import api from '../api/client';
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -201,13 +204,26 @@ const Register = () => {
     // Validate form
     if (validateForm()) {
       setIsSubmitting(true);
-      
-      // Simulate API call
       try {
-        // Replace with your actual API call
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        
-        console.log('Form submitted:', formData);
+        await api.post('/auth/register', {
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          username: formData.username,
+          email: formData.email,
+          phone: formData.phone,
+          password: formData.password,
+          dateOfBirth: formData.dateOfBirth,
+          gender:
+            formData.gender === 'male'
+              ? 'Male'
+              : formData.gender === 'female'
+                ? 'Female'
+                : formData.gender === 'other'
+                  ? 'Other'
+                  : 'Prefer not to say',
+        });
+
+        toast.success('Registration completed successfully');
         setRegistrationSuccess(true);
         
         // Reset form after successful registration
@@ -228,9 +244,11 @@ const Register = () => {
           setIsSubmitting(false);
           setErrors({});
           setTouched({});
+          navigate('/login');
         }, 3000);
       } catch (error) {
-        console.error('Registration failed:', error);
+        const message = error?.response?.data?.message || 'Registration failed';
+        toast.error(message);
         setIsSubmitting(false);
       }
     }
@@ -297,7 +315,7 @@ const Register = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-linear-to-br from-indigo-100 via-purple-100 to-pink-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="mb-4">
           <Link
@@ -309,7 +327,7 @@ const Register = () => {
         </div>
         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-6">
+          <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-8 py-6">
             <h2 className="text-3xl font-bold text-white">Create Account</h2>
             <p className="text-indigo-100 mt-2">Join our community today</p>
           </div>
@@ -626,7 +644,7 @@ const Register = () => {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ${
+                className={`w-full bg-linear-to-r from-indigo-600 to-purple-600 text-white py-3 px-4 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition duration-200 ${
                   isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
                 }`}
               >

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import api from '../api/client';
 
 const issueTypes = ['Maintenance', 'Security', 'Billing', 'Facilities', 'Suggestion'];
 
@@ -21,13 +23,23 @@ const Contact = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!isMessageValid) return;
-    console.log('contact form', form);
-    setIsSubmitted(true);
-    setForm({ name: '', email: '', subject: '', message: '', issueType: '', priority: 'Medium' });
+
+    const submitContact = async () => {
+      try {
+        await api.post('/contact', form);
+        toast.success('Request submitted successfully');
+        setIsSubmitted(true);
+        setForm({ name: '', email: '', subject: '', message: '', issueType: '', priority: 'Medium' });
+      } catch (error) {
+        toast.error(error?.response?.data?.message || 'Failed to submit request');
+      }
+    };
+
+    submitContact();
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-100 via-white to-blue-50">
+    <div className="min-h-screen bg-linear-to-b from-slate-100 via-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
         <Link
           to="/"

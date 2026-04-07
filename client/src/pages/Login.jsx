@@ -1,21 +1,37 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
+import api, { saveAuth } from '../api/client';
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [remember, setRemember] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ email, password, remember });
+    setIsSubmitting(true);
+
+    try {
+      const { data } = await api.post('/auth/login', { email, password });
+      saveAuth({ ...data, remember });
+      toast.success('Logged in successfully');
+      navigate('/');
+    } catch (error) {
+      const message = error?.response?.data?.message || 'Login failed';
+      toast.error(message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-rose-50 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-linear-to-br from-amber-50 via-white to-rose-50 flex items-center justify-center p-4">
       <div className="w-full max-w-5xl bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden grid lg:grid-cols-2">
-        <section className="p-8 sm:p-10 bg-gradient-to-br from-slate-900 via-slate-800 to-amber-900 text-white">
+        <section className="p-8 sm:p-10 bg-linear-to-br from-slate-900 via-slate-800 to-amber-900 text-white">
           <Link
             to="/"
             className="inline-flex items-center rounded-xl border border-white/30 bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/20 transition-colors"
@@ -97,9 +113,10 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full rounded-xl bg-amber-600 text-white py-3 font-semibold hover:bg-amber-700 transition-colors"
+              disabled={isSubmitting}
+              className="w-full rounded-xl bg-amber-600 text-white py-3 font-semibold hover:bg-amber-700 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Sign In
+              {isSubmitting ? 'Signing In...' : 'Sign In'}
             </button>
           </form>
 
