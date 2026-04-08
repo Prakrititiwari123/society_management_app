@@ -16,7 +16,10 @@ const Login = () => {
     setIsSubmitting(true);
 
     try {
-      const { data } = await api.post('/auth/login', { email, password });
+      const { data } = await api.post('/auth/login', {
+        email: email.trim(),
+        password,
+      });
       saveAuth({ ...data, remember });
       toast.success('Logged in successfully');
       navigate('/');

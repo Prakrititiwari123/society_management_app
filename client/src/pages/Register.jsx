@@ -206,11 +206,11 @@ const Register = () => {
       setIsSubmitting(true);
       try {
         await api.post('/auth/register', {
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          username: formData.username,
-          email: formData.email,
-          phone: formData.phone,
+          firstName: formData.firstName.trim(),
+          lastName: formData.lastName.trim(),
+          username: formData.username.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
           password: formData.password,
           dateOfBirth: formData.dateOfBirth,
           gender:

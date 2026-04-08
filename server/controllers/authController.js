@@ -5,6 +5,29 @@ import User from "../models/User.js";
 const generateToken = (id) =>
   jwt.sign({ id }, process.env.JWT_SECRET || "dev_secret", { expiresIn: "7d" });
 
+const normalizeEmail = (value) => value?.trim().toLowerCase();
+
+const escapeRegExp = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
+const isHashedPassword = (value) => typeof value === "string" && value.startsWith("$2");
+
+const findUserByEmail = async (email) => {
+  const normalizedEmail = normalizeEmail(email);
+
+  if (!normalizedEmail) {
+    return null;
+  }
+
+  const exactUser = await User.findOne({ email: normalizedEmail });
+
+  if (exactUser) {
+    return exactUser;
+  }
+
+  const emailPattern = new RegExp(`^\\s*${escapeRegExp(normalizedEmail)}\\s*$`, "i");
+  return User.findOne({ email: emailPattern });
+};
+
 export const registerUser = async (req, res, next) => {
   try {
     const {
@@ -18,13 +41,16 @@ export const registerUser = async (req, res, next) => {
       gender,
     } = req.body;
 
-    if (!firstName || !lastName || !username || !email || !password) {
+    const normalizedEmail = normalizeEmail(email);
+    const normalizedUsername = username?.trim();
+
+    if (!firstName || !lastName || !normalizedUsername || !normalizedEmail || !password) {
       res.status(400);
       throw new Error("Please provide all required fields");
     }
 
     const existingUser = await User.findOne({
-      $or: [{ email: email.toLowerCase() }, { username }],
+      $or: [{ email: normalizedEmail }, { username: normalizedUsername }],
     });
 
     if (existingUser) {
@@ -35,11 +61,11 @@ export const registerUser = async (req, res, next) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
-      firstName,
-      lastName,
-      username,
-      email: email.toLowerCase(),
-      phone,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      username: normalizedUsername,
+      email: normalizedEmail,
+      phone: phone?.trim(),
       password: hashedPassword,
       dateOfBirth,
       gender,
@@ -61,24 +87,32 @@ export const registerUser = async (req, res, next) => {
 export const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
+    const normalizedEmail = normalizeEmail(email);
 
-    if (!email || !password) {
+    if (!normalizedEmail || !password) {
       res.status(400);
       throw new Error("Email and password are required");
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await findUserByEmail(normalizedEmail);
 
     if (!user) {
       res.status(401);
       throw new Error("Invalid credentials");
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = isHashedPassword(user.password)
+      ? await bcrypt.compare(password, user.password)
+      : password === user.password;
 
     if (!isMatch) {
       res.status(401);
       throw new Error("Invalid credentials");
+    }
+
+    if (!isHashedPassword(user.password)) {
+      user.password = await bcrypt.hash(password, 10);
+      await user.save();
     }
 
     res.json({
