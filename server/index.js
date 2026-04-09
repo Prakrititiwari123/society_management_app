@@ -4,7 +4,9 @@ import dotenv from "dotenv";
 import connectDB from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import communityRoutes from "./routes/communityRoutes.js";
+import dashboardRoutes from "./routes/dashboardRoutes.js";
 import facilityRoutes from "./routes/facilityRoutes.js";
+import maintenanceRoutes from "./routes/maintenanceRoutes.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import notFound from "./middlewares/notFoundMiddleware.js";
@@ -29,7 +31,9 @@ app.get("/", (req, res) => {
 
 app.use("/api/auth", authRoutes);
 app.use("/api/community", communityRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/facilities", facilityRoutes);
+app.use("/api/maintenance", maintenanceRoutes);
 app.use("/api/payments", paymentRoutes);
 app.use("/api/contact", contactRoutes);
 

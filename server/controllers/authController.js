@@ -35,6 +35,7 @@ export const registerUser = async (req, res, next) => {
       lastName,
       username,
       email,
+      roomNo,
       phone,
       password,
       dateOfBirth,
@@ -65,6 +66,7 @@ export const registerUser = async (req, res, next) => {
       lastName: lastName.trim(),
       username: normalizedUsername,
       email: normalizedEmail,
+      roomNo: roomNo?.trim(),
       phone: phone?.trim(),
       password: hashedPassword,
       dateOfBirth,
@@ -77,6 +79,7 @@ export const registerUser = async (req, res, next) => {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
+      roomNo: user.roomNo,
       token: generateToken(user._id),
     });
   } catch (error) {
@@ -121,6 +124,7 @@ export const loginUser = async (req, res, next) => {
       lastName: user.lastName,
       username: user.username,
       email: user.email,
+      roomNo: user.roomNo,
       token: generateToken(user._id),
     });
   } catch (error) {

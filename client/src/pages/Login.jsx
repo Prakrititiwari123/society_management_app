@@ -22,7 +22,7 @@ const Login = () => {
       });
       saveAuth({ ...data, remember });
       toast.success('Logged in successfully');
-      navigate('/');
+      navigate('/dashboard');
     } catch (error) {
       const message = error?.response?.data?.message || 'Login failed';
       toast.error(message);

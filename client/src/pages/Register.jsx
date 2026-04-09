@@ -9,6 +9,7 @@ const Register = () => {
     firstName: '',
     lastName: '',
     email: '',
+    roomNo: '',
     phone: '',
     password: '',
     confirmPassword: '',
@@ -52,6 +53,12 @@ const Register = () => {
           error = 'Username must be less than 20 characters';
         } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
           error = 'Username can only contain letters, numbers, and underscores';
+        }
+        break;
+
+      case 'roomNo':
+        if (!value.trim()) {
+          error = 'Room number is required';
         }
         break;
 
@@ -210,6 +217,7 @@ const Register = () => {
           lastName: formData.lastName.trim(),
           username: formData.username.trim(),
           email: formData.email.trim(),
+          roomNo: formData.roomNo.trim(),
           phone: formData.phone.trim(),
           password: formData.password,
           dateOfBirth: formData.dateOfBirth,
@@ -232,6 +240,7 @@ const Register = () => {
             firstName: '',
             lastName: '',
             email: '',
+            roomNo: '',
             phone: '',
             password: '',
             confirmPassword: '',
@@ -401,6 +410,29 @@ const Register = () => {
                 />
                 {touched.username && errors.username && (
                   <p className="mt-1 text-xs text-red-500">{errors.username}</p>
+                )}
+              </div>
+
+              {/* Room Number */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Room Number <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="roomNo"
+                  value={formData.roomNo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition duration-200 ${
+                    touched.roomNo && errors.roomNo
+                      ? 'border-red-500 bg-red-50'
+                      : 'border-gray-300'
+                  }`}
+                  placeholder="A-204"
+                />
+                {touched.roomNo && errors.roomNo && (
+                  <p className="mt-1 text-xs text-red-500">{errors.roomNo}</p>
                 )}
               </div>
 
