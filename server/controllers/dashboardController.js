@@ -26,35 +26,6 @@ export const getDashboardOverview = async (req, res, next) => {
 
     const openMaintenance = maintenanceRequests.filter((request) => request.status !== "Resolved").length;
 
-    const facilityPayments = payments
-      .filter((transaction) => transaction.status === "Paid")
-      .filter((transaction) => {
-        const title = `${transaction.title || ""}`.toLowerCase();
-        return (
-          title.includes("facility") ||
-          title.includes("booking") ||
-          title.includes("pool") ||
-          title.includes("gym") ||
-          title.includes("clubhouse") ||
-          title.includes("court") ||
-          title.includes("hall") ||
-          title.includes("suite") ||
-          title.includes("deck") ||
-          title.includes("maintenance") === false
-        );
-      })
-      .map((transaction) => ({
-        _id: transaction._id,
-        name: transaction.title,
-        category: "Paid",
-        type: "payment",
-        status: transaction.status,
-        method: transaction.method,
-        amount: transaction.amount,
-        date: transaction.paidAt || transaction.createdAt,
-        note: `Paid via ${transaction.method || "unknown method"}`,
-      }));
-
     const facilityBookings = bookings.map((booking) => ({
       _id: booking._id,
       name: booking.facility,
@@ -81,7 +52,7 @@ export const getDashboardOverview = async (req, res, next) => {
         open: openMaintenance,
         total: maintenanceRequests.length,
       },
-      userFacilities: [...facilityPayments, ...facilityBookings].slice(0, 8),
+      userFacilities: facilityBookings.length > 0 ? [facilityBookings[0]] : [],
       paymentMethods,
     });
   } catch (error) {

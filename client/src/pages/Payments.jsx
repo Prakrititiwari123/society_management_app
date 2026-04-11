@@ -1,15 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import api from '../api/client';
+import api, { clearAuth, getAuth } from '../api/client';
 
 const Payments = () => {
+  const navigate = useNavigate();
   const [transactions, setTransactions] = useState([]);
   const [summary, setSummary] = useState({ totalDue: 1100, paidThisMonth: 5000, walletBalance: 450 });
   const [selectedMethod, setSelectedMethod] = useState('UPI');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    const auth = getAuth();
+
+    if (!auth?.token) {
+      navigate('/login');
+      return;
+    }
+
     const loadPayments = async () => {
       try {
         const [summaryResponse, transactionsResponse] = await Promise.all([
@@ -21,11 +29,16 @@ const Payments = () => {
         setTransactions(transactionsResponse.data || []);
       } catch (error) {
         toast.error(error?.response?.data?.message || 'Failed to load payment data');
+
+        if (error?.response?.status === 401) {
+          clearAuth();
+          navigate('/login');
+        }
       }
     };
 
     loadPayments();
-  }, []);
+  }, [navigate]);
 
   const handlePay = async () => {
     setIsSubmitting(true);

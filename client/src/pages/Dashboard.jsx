@@ -131,13 +131,13 @@ const Dashboard = () => {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                to="/payments"
+                to="/user-payments"
                 className="inline-flex items-center rounded-xl bg-cyan-500 px-4 py-2.5 text-sm font-semibold text-slate-950 hover:bg-cyan-400 transition-colors"
               >
-                Payments
+                User Payments
               </Link>
               <Link
-                to="/facilities"
+                to="/user-facilities"
                 className="inline-flex items-center rounded-xl border border-white/15 bg-white/5 px-4 py-2.5 text-sm font-semibold text-white hover:bg-white/10 transition-colors"
               >
                 User Facilities
@@ -400,30 +400,24 @@ const Dashboard = () => {
 
             <article className="rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 shadow-2xl shadow-slate-950/30">
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/75">User Facilities</p>
-              <h2 className="mt-2 text-2xl font-semibold text-white">Facilities used and paid for</h2>
+              <h2 className="mt-2 text-2xl font-semibold text-white">Selected facility</h2>
 
-              <div className="mt-5 space-y-3">
-                {dashboard.userFacilities.length === 0 ? (
-                  <p className="text-sm text-slate-400">No facility usage or facility payments yet.</p>
-                ) : (
-                  dashboard.userFacilities.map((item) => (
-                    <div key={item._id} className="rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3">
-                      <div className="flex items-center justify-between gap-3">
-                        <p className="font-medium text-white">{item.name}</p>
-                        <span className="rounded-full bg-cyan-400/15 px-2.5 py-1 text-[11px] font-semibold text-cyan-200">
-                          {item.category}
-                        </span>
-                      </div>
-                      <p className="text-sm text-slate-400 mt-1">
-                        {item.type === 'booking'
-                          ? `${item.date} at ${item.time} • ${item.status}`
-                          : `${new Date(item.date).toLocaleDateString()} • ${item.status}`}
-                      </p>
-                      <p className="text-xs text-slate-500 mt-1">{item.note}</p>
+              {dashboard.userFacilities.length > 0 && (
+                <div className="mt-5">
+                  <div className="rounded-2xl border border-white/10 bg-slate-950/40 px-4 py-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-medium text-white">{dashboard.userFacilities[0].name}</p>
+                      <span className="rounded-full bg-cyan-400/15 px-2.5 py-1 text-[11px] font-semibold text-cyan-200">
+                        {dashboard.userFacilities[0].category}
+                      </span>
                     </div>
-                  ))
-                )}
-              </div>
+                    <p className="text-sm text-slate-400 mt-1">
+                      {dashboard.userFacilities[0].date} at {dashboard.userFacilities[0].time} • {dashboard.userFacilities[0].status}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">{dashboard.userFacilities[0].note}</p>
+                  </div>
+                </div>
+              )}
             </article>
           </aside>
         </section>

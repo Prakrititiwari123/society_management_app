@@ -51,7 +51,6 @@ const Home = () => {
                 { label: 'Home', path: '/' },
                 { label: 'Facilities', path: '/facilities' },
                 { label: 'Community', path: '/community' },
-                { label: 'Payments', path: '/payments' },
                 { label: 'Contact', path: '/contact' }
               ].map((item) => (
                 <Link
