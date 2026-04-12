@@ -94,7 +94,7 @@ const Home = () => {
       </nav>
 
       {/* ----- HERO SECTION: modern, benefit-driven ----- */}
-      <div className="relative overflow-hidden">
+      <div id="about" className="relative overflow-hidden">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-80 h-80 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
         <div className="absolute bottom-0 left-0 -mb-10 -ml-10 w-80 h-80 bg-cyan-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
         
@@ -186,7 +186,7 @@ const Home = () => {
           
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Advantage 1 */}
-            <div className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
+            <div id="security" className="bg-slate-50/80 rounded-3xl p-8 border border-slate-200/60 hover:border-indigo-200 hover:shadow-xl transition-all group">
               <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-indigo-100 to-indigo-200 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 <FaBolt className="text-indigo-700 text-2xl" />
               </div>
@@ -230,7 +230,7 @@ const Home = () => {
       </div>
 
       {/* ----- FACILITIES SECTION: smart amenities management ----- */}
-      <div className="bg-linear-to-b from-indigo-50/30 to-white py-20 lg:py-28">
+      <div id="facilities" className="bg-linear-to-b from-indigo-50/30 to-white py-20 lg:py-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             
@@ -350,7 +350,7 @@ const Home = () => {
       </div>
 
       {/* ----- CTA BANNER: ready to start ----- */}
-      <div className="bg-indigo-900 py-16 lg:py-20 relative overflow-hidden">
+      <div id="pricing" className="bg-indigo-900 py-16 lg:py-20 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-64 h-64 bg-indigo-700 rounded-full mix-blend-overlay filter blur-3xl opacity-20"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-indigo-600 rounded-full mix-blend-overlay filter blur-3xl opacity-20"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -393,11 +393,11 @@ const Home = () => {
               <span className="text-white font-semibold text-lg">Proximate<span className="text-indigo-400">.</span></span>
             </div>
             <div className="flex flex-wrap justify-center gap-8 text-sm">
-              <a href="#" className="hover:text-white transition">About</a>
-              <a href="#" className="hover:text-white transition">Facilities</a>
-              <a href="#" className="hover:text-white transition">Pricing</a>
-              <a href="#" className="hover:text-white transition">Security</a>
-              <a href="#" className="hover:text-white transition">Contact</a>
+              <a href="#about" className="hover:text-white transition">About</a>
+              <a href="#facilities" className="hover:text-white transition">Facilities</a>
+              <a href="#pricing" className="hover:text-white transition">Pricing</a>
+              <a href="#security" className="hover:text-white transition">Security</a>
+              <Link to="/contact" className="hover:text-white transition">Contact</Link>
             </div>
             <div className="text-sm text-slate-400">
               © 2024 Proximate. All rights reserved.
