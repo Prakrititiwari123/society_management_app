@@ -119,14 +119,13 @@ const Home = () => {
               
               {/* CTA buttons */}
               <div className="flex flex-wrap gap-4 pt-4">
-                <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl text-base font-semibold transition-all shadow-xl shadow-indigo-200/70 flex items-center gap-3 hover:scale-105">
+                <Link
+                  to="/register"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-4 rounded-2xl text-base font-semibold transition-all shadow-xl shadow-indigo-200/70 flex items-center gap-3 hover:scale-105"
+                >
                   <FaBuilding />
                   Start your society
-                </button>
-                <button className="bg-white border-2 border-indigo-200 hover:border-indigo-300 text-slate-700 px-8 py-4 rounded-2xl text-base font-semibold transition-all flex items-center gap-3 hover:shadow-lg">
-                  <FaShieldAlt className="text-indigo-500" />
-                  View demo
-                </button>
+                </Link>
               </div>
               
               {/* Trust indicator */}
@@ -338,10 +337,13 @@ const Home = () => {
                   <span className="text-sm font-medium bg-purple-100 text-purple-700 px-3 py-1 rounded-full">7-10 PM</span>
                 </div>
               </div>
-              <button className="w-full mt-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 border border-indigo-200">
+              <Link
+                to="/facilities"
+                className="w-full mt-8 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-4 rounded-2xl transition-all flex items-center justify-center gap-2 border border-indigo-200"
+              >
                 <FaCalendarCheck />
                 Book a facility
-              </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -359,14 +361,20 @@ const Home = () => {
             Join 250+ societies that trust Proximate for seamless, intelligent community management.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-white text-indigo-900 px-8 py-4 rounded-2xl text-base font-bold hover:bg-indigo-50 transition-all shadow-2xl flex items-center gap-3">
+            <Link
+              to="/register"
+              className="bg-white text-indigo-900 px-8 py-4 rounded-2xl text-base font-bold hover:bg-indigo-50 transition-all shadow-2xl flex items-center gap-3"
+            >
               <FaBuilding />
               Start free trial
-            </button>
-            <button className="border-2 border-indigo-400 text-white px-8 py-4 rounded-2xl text-base font-bold hover:bg-indigo-800 transition-all flex items-center gap-3">
+            </Link>
+            <Link
+              to="/contact"
+              className="border-2 border-indigo-400 text-white px-8 py-4 rounded-2xl text-base font-bold hover:bg-indigo-800 transition-all flex items-center gap-3"
+            >
               <FaHandHoldingHeart />
               Schedule demo
-            </button>
+            </Link>
           </div>
           <p className="text-indigo-300 text-sm mt-8">
             No credit card required · Free 14-day trial
