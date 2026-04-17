@@ -33,7 +33,6 @@ const App = () => {
         <Route path="/payments" element={<ProtectedRoute><Payments/></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
-   
     </>
   )
 }
