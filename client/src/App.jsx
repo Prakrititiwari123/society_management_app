@@ -13,8 +13,6 @@ import UserFacilities from './pages/UserFacilities'
 import UserPayments from './pages/UserPayments'
 import ProtectedRoute from './components/ProtectedRoute'
 
-
-
 const App = () => {
   return (
     <>
