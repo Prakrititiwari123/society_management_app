@@ -17,6 +17,7 @@ const Facilities = () => {
   const [booking, setBooking] = useState({ facility: '', date: '', time: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  
   useEffect(() => {
     const loadAmenities = async () => {
       try {
