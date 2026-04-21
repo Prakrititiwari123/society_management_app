@@ -19,6 +19,7 @@ const Facilities = () => {
 
   
   useEffect(() => {
+  
     const loadAmenities = async () => {
       try {
         const { data } = await api.get('/facilities/amenities');
