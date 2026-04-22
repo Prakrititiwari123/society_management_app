@@ -25,6 +25,7 @@ const Dashboard = () => {
     userFacilities: [],
     paymentMethods: [],
   });
+  
   const [maintenanceForm, setMaintenanceForm] = useState(emptyMaintenanceForm);
 
   useEffect(() => {
