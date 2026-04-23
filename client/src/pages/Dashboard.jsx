@@ -30,7 +30,6 @@ const Dashboard = () => {
 
   useEffect(() => {
     const auth = getAuth();
-
     if (!auth?.token) {
       navigate('/login');
       return;
