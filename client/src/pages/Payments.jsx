@@ -35,7 +35,6 @@ const Payments = () => {
         }
       }
     };
-
     loadPayments();
   }, [navigate]);
 
