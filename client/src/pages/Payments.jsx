@@ -11,6 +11,7 @@ const Payments = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
+    
     const auth = getAuth();
     if (!auth?.token) {
       navigate('/login');
